@@ -1,0 +1,9 @@
+# ~/Code/Ruby/Dotfiles/.railsrc
+
+--database=postgresql
+--webpack
+--skip-active-job
+--skip-spring
+--skip-coffee
+
+--template=~/Code/Ruby/Dotfiles/rails_template.rb
