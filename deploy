@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require 'open3'
+require 'pry'
+
+puts 'This will deploy the .irbrc'
+puts 'Do you want to continue? (y/n)'
+reply = gets
+# binding.pry
+if ["Yes", "yes", "Y", "y"].include? reply.chomp
+  puts "Hello, world!"
+else
+  puts "Fine, don't say hello!"
+end
+

@@ -3,6 +3,9 @@ gem_group :development, :test do
   gem 'dotenv-rails'
   gem "factory_bot_rails"
   gem "pry-rails"
+  gem "rubocop", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
 end
 
 
@@ -69,14 +72,16 @@ EOL
 create_file ".editorconfig", editorconfig
 
 if yes? 'Do you wish to use Sorbet? (y/n)'
+  gem 'dalli'
+  run "bundle install"
 
-gem 'sorbet-runtime'
-gem 'dalli'
+  gem 'sorbet-runtime'
 
-gem_group :development do
-  gem 'sorbet', :group => :development
-  gem 'tapioca', require: false, :group => :development
-end
+  gem_group :development do
+    gem 'sorbet', :group => :development
+    gem 'tapioca', require: false, :group => :development
+  end
 
-run "bundle exec tapioca init"
+  run "bundle install"
+  run "bundle exec tapioca init"
 end
