@@ -4,13 +4,7 @@ require 'pry'
 require 'pry-byebug'
 require 'fileutils'
 
-def yes?(prompt)
-  puts prompt
-  reply = gets
-  ["Yes", "yes", "Y", "y"].include? reply.chomp
-end
 
-if yes?("Do you want to deploy .irbrc?")
   # puts "Hello, world!"
   if File.exist?("#{ENV.fetch('HOME')}/.irbrc")
     # binding.pry
@@ -22,9 +16,8 @@ if yes?("Do you want to deploy .irbrc?")
     puts "File does not exist"
     FileUtils.cp(".irbrc", "#{ENV.fetch('HOME')}/.irbrc")
   end
-end
 
-if yes?("Do you want to deploy .railsrc?")
+
   # puts "Hello, world!"
   if File.exist?("#{ENV.fetch('HOME')}/.railsrc")
     # binding.pry
@@ -36,4 +29,3 @@ if yes?("Do you want to deploy .railsrc?")
     puts "File does not exist"
     FileUtils.cp(".railsrc", "#{ENV.fetch('HOME')}/.railsrc")
   end
-end

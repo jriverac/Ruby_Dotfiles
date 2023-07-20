@@ -1,3 +1,4 @@
+
 gem_group :development, :test do
   gem 'byebug', platform: :mri
   gem 'dotenv-rails'
@@ -6,6 +7,7 @@ gem_group :development, :test do
   gem "rubocop", require: false
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
+  gem 'debug'
 end
 
 
@@ -24,6 +26,9 @@ gem_group :test do
 end
 
 run "bundle install"
+
+run "bundle binstubs rspec-core"
+run "bundle binstubs rubocop"
 
 if yes? 'Do you wish to generate a root controller? (y/n)'
   name = ask('What do you want to call it?').to_s.underscore
@@ -71,6 +76,76 @@ EOL
 
 create_file ".editorconfig", editorconfig
 
+vsc_settings_json = <<-EOL
+{
+  "ruby.rubocop.executePath": "bin/",
+  "ruby.rubocop.useBundler": true
+}
+EOL
+
+create_file ".vscode/settings.json", vsc_settings_json
+
+vsc_tasks_json = <<-EOL
+{
+}
+EOL
+
+create_file ".vscode/tasks.json", vsc_tasks_json
+
+vsc_launch_json = <<-EOL
+{
+  "configurations": [
+  {
+    "name": "Rails Server",
+    "type": "Ruby",
+    "request": "launch",
+    "program": "${workspaceRoot}/bin/rails",
+    "args": [
+      "server"
+    ]
+  },
+  {
+    "name": "Ruby Debug RSpec",
+    "type": "rdbg",
+    "request": "launch",
+    "cwd": "${workspaceRoot}/bin/rspec",
+    "args": []
+  },
+  {
+    "name": "Ruby Debug Rails",
+    "type": "rdbg",
+    "request": "launch",
+    "cwd": "${workspaceRoot}/bin/rails",
+    "args": [
+      "server"
+    ]
+  }
+  ]
+}
+EOL
+
+vsc_launch_2_json = <<-EOL
+{
+  "configurations": [
+  {
+    "name": "Attach to Rails",
+    "type": "rdbg",
+    "request": "attach",
+    "cwd": "${workspaceRoot}/bin/rails",
+    "args": [
+      "server"
+    ]
+  }
+  ]
+}
+EOL
+
+create_file ".vscode/launch.json", vsc_launch_2_json
+
+
+
+run "bin/rails generate rspec:install"
+
 if yes? 'Do you wish to use Sorbet? (y/n)'
   gem 'dalli'
   run "bundle install"
@@ -85,3 +160,4 @@ if yes? 'Do you wish to use Sorbet? (y/n)'
   run "bundle install"
   run "bundle exec tapioca init"
 end
+

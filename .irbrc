@@ -1,8 +1,20 @@
+# require 'rubygems'
+# require 'wirble'
+
+# Wirble.init
+# Wirble.colorize
+
+require 'awesome_print'
+
+AwesomePrint.irb!
+
 class String
   def red; "\e[31m#{self}\e[0m" end
 
   def cyan; "\e[36m#{self}\e[0m" end
 end
+
+binding.pry
 
 if defined?(Rails) && Rails.env.development?
   project_name = File.basename(Dir.pwd).cyan
@@ -27,6 +39,13 @@ if defined?(Rails) && Rails.env.development?
 
   IRB.conf[:PROMPT_MODE] = :RAILS_ENV
 
-  require 'awesome_print'
-  AwesomePrint.irb!
+  # IRB.conf[:AUTO_INDENT] = true
+  # IRB.conf[:USE_READLINE] = true
+  # IRB.conf[:USE_AUTOCOMPLETE] = true
+
+
+  puts "IRB Rails Configuration loaded."
 end
+
+
+puts "IRB Configuration loaded."

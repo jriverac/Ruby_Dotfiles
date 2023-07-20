@@ -1,5 +1,8 @@
 # ~/Code/Ruby/Dotfiles/.railsrc
+# Now without guard features
 
+
+-T
 --database=postgresql
 --webpack
 --skip-active-job
