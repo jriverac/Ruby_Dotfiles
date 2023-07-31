@@ -1,15 +1,20 @@
+gem 'newrelic_rpm'
 
 gem_group :development, :test do
   gem 'byebug', platform: :mri
   gem 'dotenv-rails'
   gem "factory_bot_rails"
-  gem "pry-rails"
   gem "rubocop", require: false
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
-  gem 'debug'
+  gem "rubocop-rake", require: false
+  gem 'rubocop-factory_bot', require: false
+  # gem 'ruby_jard', require: false
+  # gem 'pry-rails'
+  # gem 'pry-byebug'
+  # gem 'pry-doc'
+  # gem 'pry-stack_explorer'
 end
-
 
 gem_group :development do
   gem 'guard', require: false
@@ -18,6 +23,8 @@ gem_group :development do
   gem 'rspec-rails', require: false
   gem 'rspec-expectations', require: false
   gem 'rspec-mocks', require: false
+  gem 'annotate'
+  gem 'reek'
 end
 
 gem_group :test do
@@ -26,7 +33,6 @@ gem_group :test do
 end
 
 run "bundle install"
-
 run "bundle binstubs rspec-core"
 run "bundle binstubs rubocop"
 
@@ -142,9 +148,45 @@ EOL
 
 create_file ".vscode/launch.json", vsc_launch_2_json
 
+ruby_jard = <<-EOL
+config.color_scheme = "deep-space"
+config.alias_to_debugger = true
+config.layout = "wide"
+config.enabled_screens = ['backtrace', 'source']
+config.filter = :gems
+config.filter_included = ['active*', 'sidekiq']
+config.filter_excluded = ['acts-as-taggable-on']
+config.key_bindings = {
+  RubyJard::Keys::CTRL_N => 'next',
+  RubyJard::Keys::CTRL_U => 'up',
+  RubyJard::Keys::CTRL_D => 'down',
+  RubyJard::Keys::META_S => 'step'
+}
+EOL
 
+create_file ".jardrc", ruby_jard
+
+rubocop_yml = <<-EOL
+require:
+  - rubocop-rails
+  - rubocop-rake
+  - rubocop-rspec
+  - rubocop-factory_bot
+
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'node_modules/**/*'
+EOL
+
+create_file ".rubocop.yml", rubocop_yml
 
 run "bin/rails generate rspec:install"
+run "bin/rails css:install:bootstrap"
+
+run "bin/rails db:create"
+run "bin/rails db:migrate"
 
 if yes? 'Do you wish to use Sorbet? (y/n)'
   gem 'dalli'
@@ -160,4 +202,19 @@ if yes? 'Do you wish to use Sorbet? (y/n)'
   run "bundle install"
   run "bundle exec tapioca init"
 end
+
+if yes? 'Do you want to use Devise? (y/n)'
+  gem 'devise'
+
+  run 'bin/rails generate devise:install'
+  run 'bin/rails generate devise User'
+  run 'bin/rails generate devise:views'
+end
+run 'bin/rake db:create'
+run 'bin/rake db:migrate'
+
+run "bin/rubocop -A"
+run "bin/rubocop --auto-gen-config"
+
+
 

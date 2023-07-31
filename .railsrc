@@ -1,12 +1,17 @@
 # ~/Code/Ruby/Dotfiles/.railsrc
-# Now without guard features
+# Now with 100% more wwatchman
+# What is this watchman thing?
 
-
+-B
 -T
 --database=postgresql
---webpack
---skip-active-job
---skip-spring
---skip-coffee
+--css=bootstrap
 
 --template=~/Code/Ruby/Dotfiles/rails_template.rb
+
+# --webpack
+# --skip-active-job
+# --skip-turbolinks
+# --skip-coffee
+# --skip-action-cable
+# --skip-spring

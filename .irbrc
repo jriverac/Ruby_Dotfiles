@@ -1,8 +1,8 @@
-# require 'rubygems'
-# require 'wirble'
+require 'rubygems'
+require 'wirble'
 
-# Wirble.init
-# Wirble.colorize
+Wirble.init
+Wirble.colorize
 
 require 'awesome_print'
 
