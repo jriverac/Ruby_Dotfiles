@@ -85,7 +85,61 @@ create_file ".editorconfig", editorconfig
 vsc_settings_json = <<-EOL
 {
   "ruby.rubocop.executePath": "bin/",
-  "ruby.rubocop.useBundler": true
+  "ruby.rubocop.useBundler": false,
+  "ruby.rubocop.configFilePath": ".rubocop.yml",
+  "todo-tree.highlights.defaultHighlight": {
+    "icon": "alert",
+    "type": "text",
+    "foreground": "#ff0000",
+    "background": "#ffffff",
+    "opacity": 50,
+    "iconColour": "#0000FF"
+  },
+  "todo-tree.general.tags": [
+    "TODO",
+    "[ ]",
+    "[x]",
+    "FIXME",
+    "HACK"
+    "NOTE",
+    "BUG"
+  ],
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "checkbox",
+      "type": "line",
+      "iconColour": "#FF0000",
+      "background": "#FFFF00",
+      "foreground": "#FFFF00",
+      "gutterIcon": true
+    },
+    "FIXME": {
+      "foreground": "#FFFF00",
+      "background": "#FF0000",
+      "iconColour": "#FFFF00",
+      "gutterIcon": true
+    },
+    "BUG": {
+      "icon": "bug",
+      "foreground": "#FFFF00",
+      "background": "#FF0000",
+      "iconColour": "#FFFF00",
+      "fontWeight": "bold",
+      "gutterIcon": true
+    },
+    "NOTE": {
+      "icon": "note",
+      "foreground": "#85a6ff",
+      "background": "#4927c2",
+      "iconColour": "#85a6ff",
+      "gutterIcon": true
+    },
+    }
+  },
+  "todo-tree.general.periodicRefreshInterval": 5,
+  "todo-tree.general.showIconsInsteadOfTagsInStatusBar": true,
+  "todo-tree.general.tagGroups": {},
+  "todo-tree.tree.showCountsInTree": true,
 }
 EOL
 
@@ -206,30 +260,10 @@ run "bin/rails db:migrate"
 
 run "asdf local ruby 3.2.2"
 
-if yes? 'Do you wish to use Sorbet? (y/n)'
-  gem 'dalli'
 
-  gem 'sorbet-runtime'
 
-  gem_group :development do
-    gem 'sorbet', :group => :development
-    gem 'tapioca', require: false, :group => :development
-  end
 
-  run "bundle install"
-  run "bundle exec tapioca init"
-end
 
-if yes? 'Do you want to use Devise? (y/n)'
-  gem 'devise'
-
-  run 'bin/rails generate devise:install'
-  run 'bin/rails generate devise User'
-  run 'bin/rails generate devise:views'
-end
-
-run 'bin/rake db:create'
-run 'bin/rake db:migrate'
 
 run "bin/rubocop -A"
 run "bin/rubocop --auto-gen-config"

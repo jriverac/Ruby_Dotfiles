@@ -5,8 +5,7 @@ bin/bundle add dalli
 bin/bundle add sorbet-runtime
 
 bin/bundle add sorbet --group development
-
-gem 'tapioca', require: false, :group => :development
+bin/bundle add tapioca --group development --require false
 
 bin/bundle install
 
