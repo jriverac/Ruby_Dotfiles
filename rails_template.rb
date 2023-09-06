@@ -147,6 +147,7 @@ create_file ".vscode/settings.json", vsc_settings_json
 
 vsc_tasks_json = <<-EOL
 {
+
 }
 EOL
 
@@ -236,6 +237,35 @@ EOL
 
 create_file ".jardrc", ruby_jard
 
+setup_devise = <<-EOL
+#!/bin/bash
+bin/bundle add 'devise'
+
+bin/rails generate devise:install
+bin/rails generate devise User
+bin/rails generate devise:views
+EOL
+
+create_file "setup_devise.sh", setup_devise
+
+setup_sorbet = <<-EOL
+#!/bin/bash
+
+bin/bundle add dalli
+
+bin/bundle add sorbet-runtime
+
+bin/bundle add sorbet --group development
+bin/bundle add tapioca --group development --require false
+
+bin/bundle install
+
+bin/bundle tapioca init
+EOL
+
+create_file "setup_sorbet.sh", setup_sorbet
+
+
 rubocop_yml = <<-EOL
 require:
   - rubocop-rails
@@ -261,15 +291,13 @@ run "bin/rails db:migrate"
 run "asdf local ruby 3.2.2"
 
 
-
-
-
-
 run "bin/rubocop -A"
 run "bin/rubocop --auto-gen-config"
 
 run "rails app:update:bin"
 
-run "git init"
-
-run "git commit -m 'Initial commit'"
+after_bundle do
+  git :init
+  git add: '.'
+  git commit: "-a -m 'Initial commit'"
+end

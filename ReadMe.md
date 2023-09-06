@@ -18,13 +18,9 @@ This installs the following:
 * [.reek_rails.yml]
 * [.reek_rails_todo.yml]
 
-
-
-# Developing
+## Developing
 
 Run the **Watchman** watcher to ensure that
-
-
 
 ## Installation
 
@@ -34,4 +30,3 @@ After cloning the repository, run the following command to install the dotfiles:
 
 ```
 
-## Development
