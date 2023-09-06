@@ -28,7 +28,7 @@ gem_group :development do
 end
 
 gem_group :test do
-  # TODO: What the hell is Launchy for?
+  # NOTE: What the hell is Launchy for?
   gem "launchy"
 end
 
@@ -141,6 +141,22 @@ vsc_launch_2_json = <<-EOL
     "args": [
       "server"
     ]
+  },
+  {
+    "name": "Debug Server",
+    "type": "rdbg",
+    "request": "launch",
+    "script": "${workspaceRoot}/bin/rails",
+    "args": [
+      "server"
+    ]
+  },
+  {
+    "name": "Debug RSpec",
+    "type": "rdbg",
+    "request": "launch",
+    "script": "${workspaceRoot}/bin/rspec",
+    "args": []
   }
   ]
 }
@@ -188,9 +204,10 @@ run "bin/rails css:install:bootstrap"
 run "bin/rails db:create"
 run "bin/rails db:migrate"
 
+run "asdf local ruby 3.2.2"
+
 if yes? 'Do you wish to use Sorbet? (y/n)'
   gem 'dalli'
-  run "bundle install"
 
   gem 'sorbet-runtime'
 
@@ -210,11 +227,15 @@ if yes? 'Do you want to use Devise? (y/n)'
   run 'bin/rails generate devise User'
   run 'bin/rails generate devise:views'
 end
+
 run 'bin/rake db:create'
 run 'bin/rake db:migrate'
 
 run "bin/rubocop -A"
 run "bin/rubocop --auto-gen-config"
 
+run "rails app:update:bin"
 
+run "git init"
 
+run "git commit -m 'Initial commit'"
