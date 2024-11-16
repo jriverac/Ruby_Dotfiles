@@ -1,6 +1,6 @@
-# Ruby Dotfiles
+# Ruby on Rails Development Container Application Template
 
-These are the dotfiles I use for Ruby development.
+This is a template for creating Ruby on Rails applications running within Development Containers.
 
 This installs the following:
 

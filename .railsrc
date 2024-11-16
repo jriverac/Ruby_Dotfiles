@@ -1,9 +1,6 @@
-# ~/Code/Ruby/Dotfiles/.railsrc
-# Now with 100% more wwatchman
-# What is this watchman thing?
-
 -B
 -T
+
 --database=postgresql
 --css=bootstrap
 
