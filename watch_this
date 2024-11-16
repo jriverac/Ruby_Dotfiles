@@ -1,0 +1,4 @@
+#! /bin/zsh
+
+watchman -- trigger . irbrc-change '**/.irbrc' -- silent_deploy
+watchman -- trigger . railsrc-change '**/.railsrc' -- silent_deploy
