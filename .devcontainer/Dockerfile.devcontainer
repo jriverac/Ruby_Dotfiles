@@ -1,0 +1,72 @@
+FROM cf-registry.nr-ops.net/newrelic/ubuntu-2204-ruby:3.1-fips
+
+ARG ARTIFACTORY_USERNAME
+ARG ARTIFACTORY_PASSWORD
+
+ENV TZ="America/Los_Angeles"
+
+ENV ARTIFACTORY_USERNAME ${ARTIFACTORY_USERNAME}
+ENV ARTIFACTORY_PASSWORD ${ARTIFACTORY_PASSWORD}
+
+RUN apt-mark hold openssl libssl-dev
+RUN apt-get update
+RUN apt-get -y install unixodbc
+RUN apt-get -y install unixodbc-dev
+RUN apt-get -y install cron
+RUN apt-get -y install libpq-dev
+RUN apt-get -y install icu-devtools
+RUN apt-get -y install neovim
+RUN apt-get -y install wget
+RUN apt-get -y install gnupg
+RUN apt-get -y install systemctl
+RUN apt-get -y install nano
+RUN apt-get -y install git
+
+# RUN apt-get -y  install git curl libssl-dev libreadline-dev zlib1g-dev autoconf bison build-essential libyaml-dev libreadline-dev libncurses5-dev libffi-dev libgdbm-dev
+
+RUN curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
+
+RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+
+RUN echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+
+RUN apt-get install -y ruby-full rubygems
+
+RUN gem install bundler -v '2.4.12'
+
+COPY . /data/app
+
+COPY .ruby-version /data/app
+
+RUN --mount=type=secret,id=ARTIFACTORY_USERNAME \
+  --mount=type=secret,id=ARTIFACTORY_PASSWORD \
+  try-bundle-install
+
+# NOTE: This installs the snowflake-odbc driver
+RUN apt-get -y install wget
+
+RUN if [ `dpkg --print-architecture` = "arm64" ]; then (echo "arm64" > .platform) else (echo "amd64" > .platform); fi
+
+RUN if [ `cat .platform` = "amd64" ]; then wget https://sfc-repo.snowflakecomputing.com/odbc/linux/3.1.3/snowflake-odbc-3.1.3.x86_64.deb; fi
+RUN if [ `cat .platform` = "amd64" ]; then dpkg -i snowflake-odbc-3.1.3.x86_64.deb; fi
+
+# For arm/M1 builds
+RUN if [ `cat .platform` = "arm64" ]; then wget https://sfc-repo.snowflakecomputing.com/odbc/linuxaarch64/3.1.3/snowflake-odbc-3.1.3.aarch64.deb; fi
+RUN if [ `cat .platform` = "arm64" ]; then dpkg -i snowflake-odbc-3.1.3.aarch64.deb; fi
+
+RUN apt-get install -y gnupg
+
+# NOTE: This enables the cron jobs to run according to the specified schedule in the Cron Table.
+RUN apt-get -y install systemctl
+
+COPY config/odbc/blank.ini /data/app/log/testhello.log
+COPY config/odbc/blank.ini /data/app/log/usage_reporter.log
+
+RUN chmod 777 /data/app/log/testhello.log
+RUN chmod 777 /data/app/log/usage_reporter.log
+
+RUN crontab cron/crontab
+
+COPY Dockerfile* compose* config.ru* /data/app/
+
+ENTRYPOINT [ "sleep infinity" ]

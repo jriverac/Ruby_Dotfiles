@@ -1,0 +1,14 @@
+#!/bin/sh
+
+.devcontainer/configureOdbc
+
+source .bashrc
+
+.devcontainer/neovimSetup
+
+export EDITOR="$(which code) -w"
+
+bundle config artifacts.datanerd.us ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD}
+
+# NOTE: This is necessary in the DevContainer since we don't run the `start` script.
+/etc/init.d/cron start
