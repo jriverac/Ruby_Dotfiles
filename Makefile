@@ -7,4 +7,4 @@ install:
 	fi
 
 deploy:
-	copy ~/.railsrc ~/Code/Ruby/Dotfiles/.railsrc;
+	cp ~/.railsrc ~/Code/Ruby/Dotfiles/.railsrc;

@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [ -f /.dockerenv ]; then
+  cat bin/go_outside.txt
+  exit 1
+fi
+
+if ! command -v op &>/dev/null; then
+  MESSAGE=$(
+    cat <<PROMPT
+1Password CLI is not installed. Please install it and try again.
+You can install the 1Password CLI by running the following command:
+
+  brew install 1password-cli
+
+Or, I can install it for you.
+-
+PROMPT
+  )
+
+  echo "$MESSAGE"
+  read -p "Install 1Password CLI? [y/N] " -n 1 -r
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    brew install 1password-cli
+  else
+    exit 1
+  fi
+fi
+
+APP_NAME="$(cat .devcontainer/.name)"
+APP_CODE="$(cat .devcontainer/.code)"
+VAULT_NAME="PASS Lab"
+ITEM_TITLE="$APP_CODE - DevContainer Environment"
+ENV_FILE_NAME="devcontainer.env"
+ENV_FILE_PATH=".devcontainer/$ENV_FILE_NAME"
+
+if op vault get "$VAULT_NAME" &>/dev/null; then
+  if op read op://"$VAULT_NAME"/"$ITEM_TITLE"/"$ENV_FILE_NAME" &>/dev/null; then
+    op read op://"$VAULT_NAME"/"$ITEM_TITLE"/"$ENV_FILE_NAME" >$ENV_FILE_PATH
+    echo "Your environment file has been pulled from 1Password to $ENV_FILE_PATH."
+    echo ""
+    echo "You must rebuild your DevContainer for the changes to take effect."
+  else
+    echo "Failed to access the $ITEM_TITLE secret."
+    exit 1
+  fi
+else
+  echo "Failed to access the '"$VAULT_NAME"' vault."
+  exit 1
+fi

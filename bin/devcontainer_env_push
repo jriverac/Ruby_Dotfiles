@@ -1,0 +1,58 @@
+#!/bin/bash
+
+if [ -f /.dockerenv ]; then
+  cat bin/go_outside.txt
+  exit 1
+fi
+
+if ! command -v op &>/dev/null; then
+  MESSAGE=$(
+    cat <<PROMPT
+1Password CLI is not installed. Please install it and try again.
+You can install the 1Password CLI by running the following command:
+
+  brew install 1password-cli
+
+Or, I can install it for you.
+-
+PROMPT
+  )
+
+  echo "$MESSAGE"
+  read -p "Install 1Password CLI? [y/N] " -n 1 -r
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    brew install 1password-cli
+  else
+    exit 1
+  fi
+fi
+
+APP_NAME="$(cat .devcontainer/.name)"
+APP_CODE="$(cat .devcontainer/.code)"
+VAULT_NAME="PASS Lab"
+ITEM_TITLE="$APP_CODE - DevContainer Environment"
+ENV_FILE_PATH=".devcontainer/devcontainer.env"
+OP_MESSAGE=".devcontainer/1password_message.md"
+
+echo "Checking if environment file exists in 1Password..."
+ITEM_ID=$(op item get "$ITEM_TITLE" --vault="$VAULT_NAME" --format=json | jq -r '.id' 2>/dev/null)
+
+if [ -z "$ITEM_ID" ]; then
+  echo "Item not found. Creating new item in 1Password..."
+  op item create \
+    --category=SecureNote \
+    "devcontainer\.env[file]=$ENV_FILE_PATH" \
+    "notes=$(cat $OP_MESSAGE)" \
+    --title="$ITEM_TITLE" \
+    --vault="$VAULT_NAME" \
+    --tags="devcontainer, devcontainer_env, $APP_CODE, $APP_NAME"
+  echo "Environment file created and pushed to 1Password."
+else
+  echo "Item found. Updating existing item in 1Password..."
+  op item edit "$ITEM_ID" \
+    "devcontainer\.env[file]=$ENV_FILE_PATH" \
+    "notes=$(cat $OP_MESSAGE)" \
+    --title="$ITEM_TITLE" \
+    --vault="$VAULT_NAME"
+  echo "Environment file updated in 1Password."
+fi

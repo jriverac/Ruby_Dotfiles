@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# NOTE: Add `x` to the switches to enable debugging printout
+set -eu #o pipefail
+
+# Update the base image
+
+echo "This script is intended to be run locally. Are you running it locally? (y/n)"
+
+read response
+
+if [ "$response" != "y" ]; then
+
+  echo "Please run this script locally"
+
+  exit 1
+
+fi
+
+echo "Last built image was $(cat .devcontainer_version)"
+
+# Regex to obtain the last digit of 0.0.0 and print it
+
+#  sed -n 's/.*\([0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}\).*/\1/p' .devcontainer_version
+
+# cat .devcontainer_version | grep -Eo '[0-9]+$' .devcontainer_version
+
+# assign the result to a variable called revision
+
+revision=$(grep -Eo '[0-9]+$' .devcontainer_version)
+
+# echo "Last revision ${revision}"
+
+# increment the revision
+
+revision=$((revision + 1))
+
+# echo "Next revision ${revision}"
+
+# Write the new semantic version to the .devcontainer_version file
+
+echo "0.1.${revision}" >.devcontainer_version
+
+# echo "New base image version is `cat .devcontainer_version`"
+
+# echo "Service Name: `cat .devcontainer_name`"
+
+docker build \
+  -t cf-registry.nr-ops.net/pass/$(cat .devcontainer_name):$(cat .devcontainer_version) \
+  --build-arg="ARTIFACTORY_USERNAME=$ARTIFACTORY_USERNAME" \
+  --build-arg="ARTIFACTORY_PASSWORD=$ARTIFACTORY_PASSWORD" \
+  --file .devcontainer/Dockerfile.devcontainer .
+
+docker push cf-registry.nr-ops.net/pass/$(cat .devcontainer_name):$(cat .devcontainer_version)
+
+rm .devcontainer/Dockerfile
+
+echo "FROM cf-registry.nr-ops.net/pass/$(cat .devcontainer_name):$(cat .devcontainer_version)" >.devcontainer/Dockerfile

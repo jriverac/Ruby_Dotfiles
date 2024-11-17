@@ -1,0 +1,62 @@
+services:
+  usage-reporter:
+    container_name: aur-service
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.devcontainer
+      args:
+        - ARTIFACTORY_USERNAME=$ARTIFACTORY_USERNAME
+        - ARTIFACTORY_PASSWORD=$ARTIFACTORY_PASSWORD
+    env_file: devcontainer.env
+    volumes:
+      - ../..:/workspaces:cached
+
+  postgres:
+    container_name: aur-postgres
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - ~/data/postgres/aws-integration:/var/lib/postgresql/data
+    ports:
+      - 15432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+
+  # Snowflake Mock via Postgres
+  edw-mock:
+    container_name: aur-edw-mock
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - ~/data/postgres/edw-mock:/var/lib/postgresql/data
+    ports:
+      - 15433:5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  # AWS Metering API Mock
+  mockoon-ama:
+    container_name: aur-mockoon-ama
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.mockoon-ama
+      platforms:
+        - linux/amd64
+    ports:
+      - "8504:8504"
+
+  # Subscription Change Service Mock
+  mockoon-scs:
+    container_name: aur-mockoon-scs
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.mockoon-scs
+      platforms:
+        - linux/amd64
+    ports:
+      - "3003:3000"

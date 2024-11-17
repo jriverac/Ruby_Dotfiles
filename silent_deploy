@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# require 'open3' # for running shell commands
+require 'pry'
+require 'pry-byebug'
+require 'fileutils'
+
+# NOTE: These check if the files .irbrc and .railsrc exist in the home directory,
+# if they do, they will back them up and replace them with the files in the current
+# directory, otherwise just copy the files to the home directory.
+
+target_dir = ENV.fetch('HOME')
+
+if File.exist?("#{target_dir}/.irbrc")
+  puts ".irbrc exists, backing up to .irbrc.bak"
+  File.rename("#{target_dir}/.irbrc", "#{target_dir}/.irbrc.bak")
+  puts "copying .irbrc to #{target_dir}/.irbrc"
+  FileUtils.cp(".irbrc", "#{target_dir}/.irbrc")
+else
+  puts "File does not exist"
+  FileUtils.cp(".irbrc", "#{target_dir}/.irbrc")
+end
+
+
+if File.exist?("#{target_dir}/.railsrc")
+  puts ".irbrc exists, backing up to .irbrc.bak"
+  File.rename("#{target_dir}/.railsrc", "#{target_dir}/.railsrc.bak")
+  puts "copying .railsrc to #{target_dir}/.railsrc"
+  FileUtils.cp(".railsrc", "#{target_dir}/.railsrc")
+else
+  puts "File does not exist"
+  FileUtils.cp(".railsrc", "#{target_dir}/.railsrc")
+end

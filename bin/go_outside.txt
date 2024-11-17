@@ -1,0 +1,8 @@
+     __      _     _         _                     _
+  /\ \ \___ | |_  (_)_ __   | |__   ___ _ __ ___  / \
+ /  \/ / _ \| __| | | '_ \  | '_ \ / _ \ '__/ _ \/  /
+/ /\  / (_) | |_  | | | | | | | | |  __/ | |  __/\_/
+\_\ \/ \___/ \__| |_|_| |_| |_| |_|\___|_|  \___\/
+
+You're not supposed to run this script inside the DevContainer
+as it has dependencies on your host computer.

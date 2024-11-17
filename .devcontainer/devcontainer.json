@@ -1,0 +1,157 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
+{
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+    "remoteUser": "root",
+    "containerEnv": {
+      "ARTIFACTORY_USERNAME": "${localEnv:ARTIFACTORY_USERNAME}",
+      "ARTIFACTORY_PASSWORD": "${localEnv:ARTIFACTORY_PASSWORD}"
+    },
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "kaleidoscope-app.vscode-ksdiff",
+          "shopify.ruby-extensions-pack",
+          "lorankloeze.ruby-rubocop-revived",
+          "ms-azuretools.vscode-docker",
+          "editorconfig.editorconfig",
+          "mikestead.dotenv",
+          "gruntfuggly.todo-tree",
+          "ms-vscode-remote.remote-ssh",
+          "chdsbd.githubinator",
+          "eamodio.gitlens",
+          "oderwat.indent-rainbow",
+          "foxundermoon.shell-format",
+          "cweijan.vscode-office",
+          "codestream.codestream",
+          "pavlitsky.yard",
+          "github.copilot",
+          "github.copilot-chat",
+          "redhat.vscode-yaml",
+          "ms-vsliveshare.vsliveshare",
+          "dotenv.dotenv-vscode",
+          "aliariff.vscode-erb-beautify",
+          "razvandezsi.rspec-file-generator",
+          "ngouy.vscode-gemfile-infos",
+          "richie5um2.vscode-sort-json",
+          "davidanson.vscode-markdownlint",
+          "tyriar.sort-lines",
+          "anykeyh.simplecov-vscode",
+          "stufro.ruby-refactoring",
+          "esbenp.prettier-vscode",
+          "editorconfig.editorconfig",
+          "anweber.vscode-httpyac",
+          "rvest.vs-code-prettier-eslint",
+          "ninoseki.vscode-mogami",
+          "rogalmic.bash-debug",
+          "malt03.rails-rspec-file-toggle"
+        ],
+        "settings": {
+          "extensions.verifySignature": false,
+          "ruby.codeCompletion": "rcodetools",
+          "ruby.lint": {
+            "rubocop": true
+          },
+          "ruby.rubocop.configFile": ".rubocop.yml",
+          "ruby.rubocop.executePath": "bin/",
+          "ruby.rubocop.format": true,
+          "ruby.rubocop.lint": true,
+          "ruby.rubocop.onSave": true,
+          "ruby.rubocop.rails": true,
+          "ruby.rubocop.railsFormat": true,
+          "ruby.rubocop.railsLint": true,
+          "ruby.rubocop.railsRequireConfigFile": true,
+          "ruby.rubocop.railsTarget": "7.1",
+          "ruby.rubocop.requireConfigFile": true,
+          "ruby.rubocop.rubyTarget": "3.1",
+          "ruby.rubocop.useBundler": true,
+          "todo-tree.general.debug": true,
+          "todo-tree.general.periodicRefreshInterval": 5,
+          "todo-tree.general.showIconsInsteadOfTagsInStatusBar": true,
+          "todo-tree.general.statusBar": "tags",
+          "todo-tree.general.tagGroups": {},
+          "todo-tree.general.tags": [
+            "TODO",
+            "[ ]",
+            "[x]",
+            "FIXME",
+            "HACK",
+            "NOTE",
+            "BUG",
+            "QUESTION"
+          ],
+          "todo-tree.highlights.customHighlight": {
+            "BUG": {
+              "background": "#FF0000",
+              "fontWeight": "bold",
+              "foreground": "#FFFF00",
+              "gutterIcon": true,
+              "icon": "bug",
+              "iconColour": "#FFFF00"
+            },
+            "FIXME": {
+              "background": "#FF0000",
+              "foreground": "#FFFF00",
+              "gutterIcon": true,
+              "iconColour": "#FFFF00"
+            },
+            "NOTE": {
+              "background": "#4927c2",
+              "foreground": "#85a6ff",
+              "gutterIcon": true,
+              "icon": "note",
+              "iconColour": "#85a6ff"
+            },
+            "QUESTION": {
+              "background": "#ffff8a",
+              "foreground": "#854300",
+              "gutterIcon": true,
+              "icon": "question",
+              "iconColour": "#FF0000",
+              "type": "line"
+            },
+            "TODO": {
+              "background": "#FFFF00",
+              "foreground": "#FFFF00",
+              "gutterIcon": true,
+              "icon": "checkbox",
+              "iconColour": "#FF0000",
+              "type": "line"
+            }
+          },
+          "todo-tree.highlights.defaultHighlight": {
+            "background": "#ffffff",
+            "foreground": "#ff0000",
+            "icon": "alert",
+            "iconColour": "#0000FF",
+            "opacity": 50,
+            "type": "text"
+          },
+          "todo-tree.tree.showCountsInTree": true,
+          "window.title": "${appName}${separator}${dirty}${activeEditorShort}${separator}${activeRepositoryName}${separator}${separator}${remoteName}${separator}${profileName}",
+          "[dockerfile]": {
+            "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+          },
+          "[shellscript]": {
+            "editor.defaultFormatter": "foxundermoon.shell-format",
+            "editor.formatOnSave": true
+          },
+          "window.commandCenter": false
+        }
+      }
+    },
+    "dockerComposeFile": "docker-compose.yml",
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [
+    //   3000
+    // ],
+    "name": "AUR",
+    "overrideCommand": true,
+    "postCreateCommand": ".devcontainer/postCreate",
+    "service": "usage-reporter",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+  }

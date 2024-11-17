@@ -1,0 +1,11 @@
+# This Dockerfile is used to build the Fake SCS service with Mockoon.
+
+FROM mockoon/cli:latest
+
+COPY mockoon/aws-metering-api.json /data/app/api/aws-metering-api.json
+
+RUN pwd
+
+EXPOSE 8333
+
+ENTRYPOINT ["mockoon-cli",  "start", "--data",  "/data/app/api/aws-metering-api.json"]

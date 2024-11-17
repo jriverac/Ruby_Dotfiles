@@ -1,0 +1,12 @@
+#!/bin/bash
+
+bin/bundle add dalli
+
+bin/bundle add sorbet-runtime
+
+bin/bundle add sorbet --group development
+bin/bundle add tapioca --group development --require false
+
+bin/bundle install
+
+bin/bundle tapioca init

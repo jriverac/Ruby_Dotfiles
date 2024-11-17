@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if [ -f /.dockerenv ]; then
+  cat bin/go_outside.txt
+  exit 1
+fi
+
+if ! command -v op &>/dev/null; then
+  MESSAGE=$(
+    cat <<PROMPT
+1Password CLI is not installed. Please install it and try again.
+You can install the 1Password CLI by running the following command:
+
+  brew install 1password-cli
+
+Or, I can install it for you.
+-
+PROMPT
+  )
+
+  echo "$MESSAGE"
+  read -p "Install 1Password CLI? [y/N] " -n 1 -r
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    brew install 1password-cli
+  else
+    exit 1
+  fi
+fi
+
+APP_NAME="$(cat .devcontainer/.name)"
+APP_CODE="$(cat .devcontainer/.code)"
+VAULT_NAME="PASS Lab"
+ITEM_TITLE="$APP_CODE - DevContainer Environment"
+ENV_FILE_PATH=".devcontainer/devcontainer.env"
+ENV_FILE_NAME="devcontainer.env"
+TEMP_ENV_FILE_PATH=".devcontainer/remote.env"
+
+if command -v ksdiff &>/dev/null; then
+  rm -f $TEMP_ENV_FILE_PATH &&
+    op read op://"$VAULT_NAME/$ITEM_TITLE/$ENV_FILE_NAME" >$TEMP_ENV_FILE_PATH &&
+    ksdiff $ENV_FILE_PATH $TEMP_ENV_FILE_PATH
+else
+  rm -f $TEMP_ENV_FILE_PATH &&
+    op read op://"$VAULT_NAME/$ITEM_TITLE/$ENV_FILE_NAME" >$TEMP_ENV_FILE_PATH &&
+    opendiff $ENV_FILE_PATH $TEMP_ENV_FILE_PATH
+fi
